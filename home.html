@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transition Example</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .aside {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 10%;
+            height: 100vh;
+            background-color: #003B5C; /* Starting background color */
+            color: #fff;
+            padding: 1em;
+            text-align: center;
+            transition: background-color 1.5s ease; /* Transition for background color */
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            transition: filter 0.1s ease; /* Quick transition for filter effect */
+        }
+    </style>
+</head>
+<body>
+    <aside class="aside" id="myAside">
+        <img id="logoImage" src="logo5.png" alt="Logo" class="logo" />
+    </aside>
+    <div class="content">
+        <!-- Your content goes here -->
+        <div style="height: 2000px;">Scroll down to see the effect</div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+       $(document).ready(function() {
+    var $aside = $('#myAside');
+    var $logo = $('#logoImage');
+    var windowHeight = $(window).height();
+    var scrolled = false;
+    var originalColor = ''; // Variable to store the original background color
+
+    $(window).on('scroll', function() {
+        var scrollTop = $(this).scrollTop();
+        var topTenPercent = windowHeight * 0.4; // 10% of the window height
+
+        // Check if the scroll position is within the top 10% of the window
+        if (scrollTop <= topTenPercent) {
+            var percentageInTopTen = scrollTop / topTenPercent; // Calculate the percentage within the top 10%
+
+            // Background color change from #003B5C to #FFFFFF
+            var startColor = [0, 59, 92]; // RGB for #003B5C
+            var endColor = [255, 255, 255]; // RGB for #ffffff
+
+            var currentColor = startColor.map(function(start, i) {
+                return Math.round(start + (endColor[i] - start) * percentageInTopTen);
+            });
+
+            var currentColorStr = 'rgb(' + currentColor.join(',') + ')';
+
+            // Change logo color based on scroll position
+            if (scrollTop === 0) {
+                $logo.css('filter', 'none'); // Reset filter to make logo white at the top
+            } else {
+                var logoColor = 'invert(27%) sepia(94%) saturate(486%) hue-rotate(149deg) brightness(91%) contrast(91%)';
+                var logoColorEnd = 'invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)';
+                var logoColorTransition = logoColor.split(' ').map((value, index) => {
+                    return value.replace(/\d+/g, (match) => {
+                        return Math.round(parseInt(match) - (parseInt(match) * percentageInTopTen));
+                    });
+                }).join(' ');
+
+                $logo.css('filter', logoColorTransition);
+            }
+
+            $aside.css('background-color', currentColorStr);
+            originalColor = currentColorStr; // Store the original background color
+        }
+
+        if (scrollTop > 0 && !scrolled) {
+            scrolled = true;
+
+            $aside.on('mouseenter', function() {
+                $aside.css('background-color', '#003B5C'); // Change aside background color to #003B5C on hover
+                $logo.css('filter', 'none'); // Change logo color to white on hover
+            }).on('mouseleave', function() {
+                $aside.css('background-color', originalColor); // Restore original background color on mouse leave
+                $logo.css('filter', logoColorTransition); // Restore logo color on mouse leave
+            });
+        }
+    });
+});
+    </script>
+</body>
+</html>
