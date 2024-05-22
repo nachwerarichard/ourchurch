@@ -10,7 +10,7 @@
             padding: 0;
             height: 100%;
         }
-
+    
         .aside {
             position: fixed;
             top: 0;
@@ -23,12 +23,19 @@
             text-align: center;
             transition: background-color 1.5s ease; /* Transition for background color */
         }
-
+    
         .logo {
-            width: 120px;
-            height: 120px;
+            width: 100%; /* Make the logo image responsive */
+            max-width: 120px; /* Set a maximum width for the logo */
+            height: auto; /* Maintain aspect ratio */
             margin-bottom: 20px;
             transition: filter 0.1s ease; /* Quick transition for filter effect */
+        }
+    
+        @media (max-width: 768px) {
+            .aside {
+                width: 10%; /* Adjust width for smaller devices */
+            }
         }
     </style>
 </head>
